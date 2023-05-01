@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
@@ -8,13 +9,27 @@ from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import time
 
-# Login route and credentials
-login_url = 'https://dialer018.talkasiavoip.cc/agc/vicidial.php'
-username = '8000'
-password = '123qwe123'
+
+# Read the contents of the file
+with open('file.txt', 'r') as f:
+    file_contents = f.read()
+
+# Retrieve Login route and credentials from file
+login_url = file_contents.split('\n')[0].split('=')[1].strip().strip("'")
+username = file_contents.split('\n')[1].split('=')[1].strip().strip("'")
+password = file_contents.split('\n')[2].split('=')[1].strip().strip("'")
+
 
 # Initialize the Chrome webdriver and navigate to the login page
-driver = webdriver.Chrome('..\Downloads\chromedriver_win32')# Pls replace this with your driver path
+# Pls replace this with your driver path
+chromedriver_path = '..\Downloads\chromedriver_win32'
+
+# Create a Service object with the chromedriver path
+service = Service(chromedriver_path)
+
+# Pass the Service object to the webdriver.Chrome method
+driver = webdriver.Chrome(service=service)
+
 driver.get(login_url)
 
 # This tell selenium to fill in the following details and use the submit as well
@@ -48,19 +63,10 @@ element = wait.until(EC.visibility_of_element_located((By.NAME, 'VD_campaign')))
 soup = BeautifulSoup(driver.page_source, 'html.parser')
 select_element = soup.find('select', id='VD_campaign')
 options = select_element.find_all('option')
-print(options,"options")
 for option in options:
 	# Loop through the option tags and print the error output
-    print(option.text,"Hello")
-
-
-
-# Keep the browser window open for 1min
-time.sleep(60)
-
-
-
+    print(f"Error-Output: {option.text}")
 
 # Close the browser window
-# driver.quit()
+driver.quit()
 

@@ -1,0 +1,3 @@
+login_url = 'https://dialer018.talkasiavoip.cc/agc/vicidial.php'
+username = '8000'
+password = '123qwe123'
